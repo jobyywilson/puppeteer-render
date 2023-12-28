@@ -16,4 +16,6 @@ RUN chown -R pptruser:pptruser /usr/src/app
 
 USER pptruser
 
+EXPOSE 3000
+
 CMD [ "node", "index.js" ]
