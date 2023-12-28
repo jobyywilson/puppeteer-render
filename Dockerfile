@@ -5,11 +5,15 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 WORKDIR /usr/src/app
 
-# Use the existing non-root user in the base image
-USER pptruser
+USER root
 
 COPY package*.json ./
 RUN npm ci
 COPY . .
-CMD [ "node", "index.js" ]
 
+# Change ownership of /usr/src/app to pptruser
+RUN chown -R pptruser:pptruser /usr/src/app
+
+USER pptruser
+
+CMD [ "node", "index.js" ]
