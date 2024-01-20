@@ -16,13 +16,26 @@ const scrapeLogic = async (res) => {
   try {
     const page = await browser.newPage();
 
-    await page.goto("https://developer.chrome.com/");
+    await page.goto('https://web.whatsapp.com')
+    await page.waitForTimeout(10000)
+    const dataRefValue = await page.evaluate(() => {
+        // Execute the XPath query
+        const xpathExpression = "//div[@data-ref]";
+        const result = document.evaluate(xpathExpression, document, null, XPathResult.ANY_TYPE, null);
 
-    const textContent = await page.evaluate(() => {
-      const h2Element = document.getElementById('a-powerful-web-span-stylecolor-var-chrome-primarymade-easierspan');
-      return h2Element ? h2Element.textContent : null;
+        // Create an array to store the selected elements
+        const selectedElements = [];
+
+        let node = result.iterateNext();
+        while (node) {
+            // Add the selected div element to the array
+            selectedElements.push(node);
+            node = result.iterateNext();
+        }
+
+        return selectedElements[0].getAttribute('data-ref');
     });
-    res.send(textContent);
+    res.send(dataRefValue);
   } catch (e) {
     console.error(e);
     res.send(`Something went wrong while running Puppeteer: ${e}`);
